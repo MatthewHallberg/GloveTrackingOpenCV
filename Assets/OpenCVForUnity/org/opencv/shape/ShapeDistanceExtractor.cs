@@ -1,0 +1,82 @@
+﻿
+//
+// This file is auto-generated. Please don't modify it!
+//
+using System;
+using System.Runtime.InteropServices;
+using System.Collections.Generic;
+
+namespace OpenCVForUnity
+{
+
+// C++: class ShapeDistanceExtractor
+//javadoc: ShapeDistanceExtractor
+		public class ShapeDistanceExtractor : Algorithm
+		{
+				protected override void Dispose (bool disposing)
+				{
+#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR) || UNITY_5
+try {
+if (disposing) {
+}
+if (IsEnabledDispose) {
+if (nativeObj != IntPtr.Zero)
+shape_ShapeDistanceExtractor_delete(nativeObj);
+nativeObj = IntPtr.Zero;
+}
+} finally {
+base.Dispose (disposing);
+}
+#else
+						return;
+#endif
+				}
+
+				protected ShapeDistanceExtractor (IntPtr addr) : base(addr)
+				{
+				}
+
+
+				//
+				// C++:  float computeDistance(Mat contour1, Mat contour2)
+				//
+
+				//javadoc: ShapeDistanceExtractor::computeDistance(contour1, contour2)
+				public  float computeDistance (Mat contour1, Mat contour2)
+				{
+						ThrowIfDisposed ();
+						if (contour1 != null)
+								contour1.ThrowIfDisposed ();
+						if (contour2 != null)
+								contour2.ThrowIfDisposed ();
+
+#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR) || UNITY_5
+
+        
+        float retVal = shape_ShapeDistanceExtractor_computeDistance_10(nativeObj, contour1.nativeObj, contour2.nativeObj);
+        
+        return retVal;
+#else
+						return -1;
+#endif
+				}
+
+
+    
+		#if UNITY_IOS && !UNITY_EDITOR
+		const string LIBNAME = "__Internal";
+		#else
+				const string LIBNAME = "opencvforunity";
+		#endif
+
+
+				// C++:  float computeDistance(Mat contour1, Mat contour2)
+				[DllImport(LIBNAME)]
+				private static extern float shape_ShapeDistanceExtractor_computeDistance_10 (IntPtr nativeObj, IntPtr contour1_nativeObj, IntPtr contour2_nativeObj);
+
+				// native support for java finalize()
+				[DllImport(LIBNAME)]
+				private static extern void shape_ShapeDistanceExtractor_delete (IntPtr nativeObj);
+
+		}
+}
