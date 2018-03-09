@@ -30,12 +30,12 @@ namespace OpenCVForUnitySample
 				/// <summary>
 				/// max number of objects to be detected in frame
 				/// </summary>
-				const int MAX_NUM_OBJECTS = 5;
+				const int MAX_NUM_OBJECTS = 3;
 		
 				/// <summary>
 				/// minimum and maximum object area
 				/// </summary>
-				const int MIN_OBJECT_AREA = 20 * 20;
+				const int MIN_OBJECT_AREA = 200 * 200;
 
 //				/// <summary>
 //				/// max object area
@@ -51,6 +51,11 @@ namespace OpenCVForUnitySample
 				/// The threshold mat.
 				/// </summary>
 				Mat thresholdMat;
+				
+				private float leftHandX = 0;
+				private float leftHandY = 0;
+				private float rightHandX = 0;
+				private float rightHandY = 0;
 
 				/// <summary>
 				/// The hsv mat.
@@ -85,7 +90,7 @@ namespace OpenCVForUnitySample
 						thresholdMat = new Mat ();
 						hsvMat = new Mat ();
 			
-						//										MAX_OBJECT_AREA = (int)(webCamTexture.height * webCamTexture.width / 1.5);
+//						MAX_OBJECT_AREA = (int)(webCamTexture.height * webCamTexture.width / 1.5);
 
 
 						//gameObject.transform.localScale = new Vector3 (webCamTextureMat.cols (), webCamTextureMat.rows (), 1);
@@ -183,15 +188,39 @@ namespace OpenCVForUnitySample
 				/// <param name="temp">Temp.</param>
 				/// <param name="contours">Contours.</param>
 				/// <param name="hierarchy">Hierarchy.</param>
-				void drawObject (List<ColorObject> theColorObjects, Mat frame, Mat temp, List<MatOfPoint> contours, Mat hierarchy)
-				{
+				void drawObject (List<ColorObject> theColorObjects, Mat frame, Mat temp, List<MatOfPoint> contours, Mat hierarchy){
+						
+					for (int i = 0; i < theColorObjects.Count; i++) {
+						Imgproc.drawContours (frame, contours, i, theColorObjects [i].getColor (), 3, 8, hierarchy, int.MaxValue, new Point ());
+						//Imgproc.circle (frame, new Point (theColorObjects [i].getXPos (), theColorObjects [i].getYPos ()), 5, theColorObjects [i].getColor ());
+						Imgproc.putText (frame, theColorObjects [i].getXPos () + " , " + theColorObjects [i].getYPos (), new Point (theColorObjects [i].getXPos (), theColorObjects [i].getYPos () + 20), 1, 1, theColorObjects [i].getColor (), 2);
+						//Imgproc.putText (frame, theColorObjects [i].getType (), new Point (theColorObjects [i].getXPos (), theColorObjects [i].getYPos () - 20), 1, 2, theColorObjects [i].getColor (), 2);
+						//print position of hand
+						Debug.Log("X: " + theColorObjects [i].getXPos () + " Y: " + theColorObjects [i].getYPos ());	
+					}
+					
+					//find which objects are the largest
+					if (theColorObjects.Count > 0) {
+						leftHandX = theColorObjects [0].getXPos ();
+						leftHandY = theColorObjects [0].getYPos ();
+					}
 
-						for (int i = 0; i < theColorObjects.Count; i++) {
-								Imgproc.drawContours (frame, contours, i, theColorObjects [i].getColor (), 3, 8, hierarchy, int.MaxValue, new Point ());
-								Imgproc.circle (frame, new Point (theColorObjects [i].getXPos (), theColorObjects [i].getYPos ()), 5, theColorObjects [i].getColor ());
-								Imgproc.putText (frame, theColorObjects [i].getXPos () + " , " + theColorObjects [i].getYPos (), new Point (theColorObjects [i].getXPos (), theColorObjects [i].getYPos () + 20), 1, 1, theColorObjects [i].getColor (), 2);
-								Imgproc.putText (frame, theColorObjects [i].getType (), new Point (theColorObjects [i].getXPos (), theColorObjects [i].getYPos () - 20), 1, 2, theColorObjects [i].getColor (), 2);
-						}
+					if (theColorObjects.Count > 1) {
+						rightHandX = theColorObjects [1].getXPos ();
+						rightHandY = theColorObjects [1].getYPos ();
+					}
+
+					if (rightHandX < leftHandX && leftHandX != 0 & rightHandX != 0) {
+						leftHandX = rightHandX;
+						leftHandY = rightHandY;	
+						rightHandX = theColorObjects [0].getXPos ();
+						rightHandY = theColorObjects [0].getYPos ();
+					}	
+				}
+
+				public string GetHandPositions(){
+					string positions = leftHandX + "," + leftHandY + "," + rightHandX + "," + rightHandY;
+					return positions;
 				}
 
 				/// <summary>
