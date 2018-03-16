@@ -12,7 +12,6 @@ public class MatOfPoint : Mat {
 	public MatOfPoint() : base() {
 		
 	}
-	
 		protected MatOfPoint(IntPtr addr) : base(addr) {
 		
 		if( !empty() && checkVector(_channels, _depth) < 0 )
@@ -28,7 +27,7 @@ public class MatOfPoint : Mat {
 if (m != null)m.ThrowIfDisposed ();
 
 		
-		if( !empty() && checkVector(_channels, _depth) < 0 )
+		if(!empty() && checkVector(_channels, _depth) < 0 )
 			throw new CvException("Incompatible Mat");
 		//FIXME: do we need release() here?
 	}

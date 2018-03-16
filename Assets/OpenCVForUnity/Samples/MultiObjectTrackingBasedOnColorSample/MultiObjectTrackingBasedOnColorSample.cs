@@ -35,7 +35,7 @@ namespace OpenCVForUnitySample
 				/// <summary>
 				/// minimum and maximum object area
 				/// </summary>
-				const int MIN_OBJECT_AREA = 200 * 200;
+				const int MIN_OBJECT_AREA = 30000;
 
 //				/// <summary>
 //				/// max object area
@@ -56,6 +56,8 @@ namespace OpenCVForUnitySample
 				private float leftHandY = 0;
 				private float rightHandX = 0;
 				private float rightHandY = 0;
+				private bool leftHandClosed = false;
+				private bool rightHandClosed = false;
 
 				/// <summary>
 				/// The hsv mat.
@@ -189,20 +191,25 @@ namespace OpenCVForUnitySample
 				/// <param name="contours">Contours.</param>
 				/// <param name="hierarchy">Hierarchy.</param>
 				void drawObject (List<ColorObject> theColorObjects, Mat frame, Mat temp, List<MatOfPoint> contours, Mat hierarchy){
-						
+			
 					for (int i = 0; i < theColorObjects.Count; i++) {
 						Imgproc.drawContours (frame, contours, i, theColorObjects [i].getColor (), 3, 8, hierarchy, int.MaxValue, new Point ());
-						//Imgproc.circle (frame, new Point (theColorObjects [i].getXPos (), theColorObjects [i].getYPos ()), 5, theColorObjects [i].getColor ());
-						Imgproc.putText (frame, theColorObjects [i].getXPos () + " , " + theColorObjects [i].getYPos (), new Point (theColorObjects [i].getXPos (), theColorObjects [i].getYPos () + 20), 1, 1, theColorObjects [i].getColor (), 2);
-						//Imgproc.putText (frame, theColorObjects [i].getType (), new Point (theColorObjects [i].getXPos (), theColorObjects [i].getYPos () - 20), 1, 2, theColorObjects [i].getColor (), 2);
-						//print position of hand
-						Debug.Log("X: " + theColorObjects [i].getXPos () + " Y: " + theColorObjects [i].getYPos ());	
+						//Imgproc.putText (frame, theColorObjects [i].getXPos () + " , " + theColorObjects [i].getYPos (), new Point (theColorObjects [i].getXPos (), theColorObjects [i].getYPos () + 20), 1, 1, theColorObjects [i].getColor (), 2);
 					}
 					
 					//find which objects are the largest
 					if (theColorObjects.Count > 0) {
 						leftHandX = theColorObjects [0].getXPos ();
 						leftHandY = theColorObjects [0].getYPos ();
+						if (contours.Count > 0) {
+							if (contours [0].toList ().Count > 1000 && leftHandClosed) {
+								leftHandClosed = false;
+								Debug.Log ("LH OPEN");
+							} else if (contours [0].toList ().Count < 700 && contours [0].toList ().Count > 300 && !leftHandClosed) {
+								leftHandClosed = true;
+								Debug.Log ("LH CLOSED");
+							}
+						}
 					}
 
 					if (theColorObjects.Count > 1) {
@@ -229,7 +236,6 @@ namespace OpenCVForUnitySample
 				/// <param name="thresh">Thresh.</param>
 				void morphOps (Mat thresh)
 				{
-					
 						//create structuring element that will be used to "dilate" and "erode" image.
 						//the element chosen here is a 3px by 3px rectangle
 						Mat erodeElement = Imgproc.getStructuringElement (Imgproc.MORPH_RECT, new Size (3, 3));
@@ -252,7 +258,6 @@ namespace OpenCVForUnitySample
 				/// <param name="cameraFeed">Camera feed.</param>
 				void trackFilteredObject (ColorObject theColorObject, Mat threshold, Mat HSV, Mat cameraFeed)
 				{
-					
 						List<ColorObject> colorObjects = new List<ColorObject> ();
 						Mat temp = new Mat ();
 						threshold.copyTo (temp);
@@ -261,7 +266,6 @@ namespace OpenCVForUnitySample
 						Mat hierarchy = new Mat ();
 						//find contours of filtered image using openCV findContours function
 						Imgproc.findContours (temp, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
-						
 						//use moments method to find our filtered object
 						bool colorObjectFound = false;
 						if (hierarchy.rows () > 0) {
@@ -281,7 +285,7 @@ namespace OpenCVForUnitySample
 												//we only want the object with the largest area so we safe a reference area each
 												//iteration and compare it to the area in the next iteration.
 												if (area > MIN_OBJECT_AREA) {
-									
+																							
 														ColorObject colorObject = new ColorObject ();
 									
 														colorObject.setXPos ((int)(moment.get_m10 () / area));

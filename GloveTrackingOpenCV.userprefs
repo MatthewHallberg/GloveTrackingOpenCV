@@ -2,7 +2,7 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/OpenCVForUnity/Samples/MultiObjectTrackingBasedOnColorSample/MultiObjectTrackingBasedOnColorSample.cs">
     <Files>
-      <File FileName="Assets/OpenCVForUnity/Samples/MultiObjectTrackingBasedOnColorSample/MultiObjectTrackingBasedOnColorSample.cs" Line="213" Column="68" />
+      <File FileName="Assets/OpenCVForUnity/Samples/MultiObjectTrackingBasedOnColorSample/MultiObjectTrackingBasedOnColorSample.cs" Line="204" Column="32" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
