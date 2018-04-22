@@ -30,12 +30,12 @@ namespace OpenCVForUnitySample
 				/// <summary>
 				/// max number of objects to be detected in frame
 				/// </summary>
-				const int MAX_NUM_OBJECTS = 3;
+				const int MAX_NUM_OBJECTS = 15;
 		
 				/// <summary>
 				/// minimum and maximum object area
 				/// </summary>
-				const int MIN_OBJECT_AREA = 30000;
+				const int MIN_OBJECT_AREA = 1000; //was 30,000 lowered for demo
 
 //				/// <summary>
 //				/// max object area

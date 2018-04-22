@@ -192,6 +192,7 @@
      <Compile Include="Assets\OpenCVForUnity\Samples\WebCamTextureToMatHelper.cs" />
      <Compile Include="Assets\SendMessages.cs" />
      <Compile Include="Assets\UDPReceive.cs" />
+     <Compile Include="Assets\UIBehavior.cs" />
      <None Include="Assets\OpenCVForUnity\StreamingAssets\haarcascade_frontalface_alt.xml" />
      <None Include="Assets\OpenCVForUnity\StreamingAssets\lbpcascade_frontalface.xml" />
      <None Include="Assets\HandTrackPython\positions.txt" />

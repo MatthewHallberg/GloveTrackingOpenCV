@@ -10,8 +10,7 @@ using System.Threading;
 public class UDPReceive : MonoBehaviour {
 
 	private const int PORT = 1991;
-	public Text holdingText;
-	public Text blockingText;
+	public UIBehavior UI;
 
 	private string lastPacketText;
 	private bool gotNewPacket = false;
@@ -59,11 +58,7 @@ public class UDPReceive : MonoBehaviour {
 	}
 
 	void GotNewMessage(){
-		//new messages come in here!
-
-
-
-		holdingText.text = lastPacketText;
+		UI.GotMessage (lastPacketText);
 	}
 
 	void OnDisable() { 

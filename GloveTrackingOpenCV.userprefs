@@ -1,8 +1,8 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/UDPReceive.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/UIBehavior.cs">
     <Files>
-      <File FileName="Assets/UDPReceive.cs" Line="32" Column="22" />
+      <File FileName="Assets/UIBehavior.cs" Line="32" Column="30" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
