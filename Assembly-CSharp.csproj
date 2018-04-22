@@ -51,7 +51,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\MessageController.cs" />
      <Compile Include="Assets\OpenCVForUnity\org\opencv\bgsegm\BackgroundSubtractorGMG.cs" />
      <Compile Include="Assets\OpenCVForUnity\org\opencv\bgsegm\BackgroundSubtractorMOG.cs" />
      <Compile Include="Assets\OpenCVForUnity\org\opencv\bgsegm\Bgsegm.cs" />
@@ -191,6 +190,8 @@
      <Compile Include="Assets\OpenCVForUnity\Samples\ShowLicense.cs" />
      <Compile Include="Assets\OpenCVForUnity\Samples\TouchController.cs" />
      <Compile Include="Assets\OpenCVForUnity\Samples\WebCamTextureToMatHelper.cs" />
+     <Compile Include="Assets\SendMessages.cs" />
+     <Compile Include="Assets\UDPReceive.cs" />
      <None Include="Assets\OpenCVForUnity\StreamingAssets\haarcascade_frontalface_alt.xml" />
      <None Include="Assets\OpenCVForUnity\StreamingAssets\lbpcascade_frontalface.xml" />
      <None Include="Assets\HandTrackPython\positions.txt" />
