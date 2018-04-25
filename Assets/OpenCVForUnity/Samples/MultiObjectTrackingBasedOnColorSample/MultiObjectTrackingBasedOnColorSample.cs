@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 #if UNITY_5_3 || UNITY_5_3_OR_NEWER
 using UnityEngine.SceneManagement;
@@ -30,17 +31,25 @@ namespace OpenCVForUnitySample
 				/// <summary>
 				/// max number of objects to be detected in frame
 				/// </summary>
-				const int MAX_NUM_OBJECTS = 15;
-		
+				int MAX_NUM_OBJECTS = 15;
+				public Text txtMaxNumObjects;
+				public Slider maxNumObjectsSlider;
+				
 				/// <summary>
 				/// minimum and maximum object area
 				/// </summary>
-				const int MIN_OBJECT_AREA = 1000; //was 30,000 lowered for demo
+				int MIN_OBJECT_AREA = 1000; //was 30,000 lowered for demo
+				public Text txtMinArea;
+				public Slider minAreaSlider;
 
 //				/// <summary>
 //				/// max object area
 //				/// </summary>
-//				int MAX_OBJECT_AREA;
+				int MAX_OBJECT_AREA = 10000;
+				public Text txtMaxArea;
+				public Slider maxAreaSlider;
+				
+				public GameObject debugMenu;
 
 				/// <summary>
 				/// The rgb mat.
@@ -56,9 +65,9 @@ namespace OpenCVForUnitySample
 				private float leftHandY = 0;
 				private float rightHandX = 0;
 				private float rightHandY = 0;
-				private bool leftHandClosed = false;
-				private bool rightHandClosed = false;
-
+//				private bool leftHandClosed = false;
+//				private bool rightHandClosed = false;
+//
 				/// <summary>
 				/// The hsv mat.
 				/// </summary>
@@ -70,10 +79,56 @@ namespace OpenCVForUnitySample
 				WebCamTextureToMatHelper webCamTextureToMatHelper;
 
 				// Use this for initialization
-				void Start ()
-				{
-						webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper> ();
-						webCamTextureToMatHelper.Init ();
+				void Start () {
+					webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper> ();
+					webCamTextureToMatHelper.Init ();
+
+					if (PlayerPrefs.HasKey ("maxArea")) {
+						MAX_OBJECT_AREA = PlayerPrefs.GetInt ("maxArea");
+						SetMaxArea ((float)MAX_OBJECT_AREA);
+					}
+					if (PlayerPrefs.HasKey ("minArea")) {
+						MIN_OBJECT_AREA = PlayerPrefs.GetInt ("minArea");
+						SetMinArea ((float)MIN_OBJECT_AREA);
+					}
+					if (PlayerPrefs.HasKey ("maxNumObjects")) {
+						MAX_NUM_OBJECTS = PlayerPrefs.GetInt ("maxNumObjects");
+						SetMaxNumObjects((float)MAX_NUM_OBJECTS);
+					}
+				}
+
+				void OnDisable(){
+					PlayerPrefs.SetInt ("maxArea", MAX_OBJECT_AREA);
+					PlayerPrefs.SetInt ("minArea", MIN_OBJECT_AREA);
+					PlayerPrefs.SetInt ("maxNumObjects", MAX_NUM_OBJECTS);
+
+					webCamTextureToMatHelper.Dispose ();
+				}
+
+				public void SetMinArea(float minArea){
+					MIN_OBJECT_AREA = System.Convert.ToInt32(minArea);
+					txtMinArea.text = MIN_OBJECT_AREA.ToString();
+					minAreaSlider.value = MIN_OBJECT_AREA;
+				}
+
+				public void SetMaxArea(float maxArea){
+					MAX_OBJECT_AREA = System.Convert.ToInt32(maxArea);
+					txtMaxArea.text = MAX_OBJECT_AREA.ToString();
+					maxAreaSlider.value = MAX_OBJECT_AREA;
+				}
+
+				public void SetMaxNumObjects(float maxNumObjects){
+					MAX_NUM_OBJECTS = System.Convert.ToInt32(maxNumObjects);
+					txtMaxNumObjects.text = MAX_NUM_OBJECTS.ToString();
+					maxNumObjectsSlider.value = MAX_NUM_OBJECTS;
+				}
+
+				public void ToggleDebugMenu(){
+					if (debugMenu.activeSelf) {
+						debugMenu.SetActive (false);
+					} else {
+						debugMenu.SetActive (true);
+					}
 				}
 
 				/// <summary>
@@ -91,9 +146,6 @@ namespace OpenCVForUnitySample
 						rgbMat = new Mat (webCamTextureMat.rows (), webCamTextureMat.cols (), CvType.CV_8UC3);
 						thresholdMat = new Mat ();
 						hsvMat = new Mat ();
-			
-//						MAX_OBJECT_AREA = (int)(webCamTexture.height * webCamTexture.width / 1.5);
-
 
 						//gameObject.transform.localScale = new Vector3 (webCamTextureMat.cols (), webCamTextureMat.rows (), 1);
 						gameObject.transform.localScale = new Vector3 (1334, 750, 1);
@@ -161,26 +213,6 @@ namespace OpenCVForUnitySample
 						Utils.matToTexture2D (rgbMat, texture, colors);
 					}
 				}
-	
-				/// <summary>
-				/// Raises the disable event.
-				/// </summary>
-				void OnDisable ()
-				{
-					webCamTextureToMatHelper.Dispose ();
-				}
-		
-				/// <summary>
-				/// Raises the back button event.
-				/// </summary>
-				public void OnBackButton ()
-				{
-						#if UNITY_5_3 || UNITY_5_3_OR_NEWER
-			SceneManager.LoadScene ("OpenCVForUnitySample");
-						#else
-						Application.LoadLevel ("OpenCVForUnitySample");
-						#endif
-				}
 
 				/// <summary>
 				/// Draws the object.
@@ -197,32 +229,32 @@ namespace OpenCVForUnitySample
 						//Imgproc.putText (frame, theColorObjects [i].getXPos () + " , " + theColorObjects [i].getYPos (), new Point (theColorObjects [i].getXPos (), theColorObjects [i].getYPos () + 20), 1, 1, theColorObjects [i].getColor (), 2);
 					}
 					
-					//find which objects are the largest
-					if (theColorObjects.Count > 0) {
-						leftHandX = theColorObjects [0].getXPos ();
-						leftHandY = theColorObjects [0].getYPos ();
-						if (contours.Count > 0) {
-							if (contours [0].toList ().Count > 1000 && leftHandClosed) {
-								leftHandClosed = false;
-								Debug.Log ("LH OPEN");
-							} else if (contours [0].toList ().Count < 700 && contours [0].toList ().Count > 300 && !leftHandClosed) {
-								leftHandClosed = true;
-								Debug.Log ("LH CLOSED");
-							}
-						}
-					}
-
-					if (theColorObjects.Count > 1) {
-						rightHandX = theColorObjects [1].getXPos ();
-						rightHandY = theColorObjects [1].getYPos ();
-					}
-
-					if (rightHandX < leftHandX && leftHandX != 0 & rightHandX != 0) {
-						leftHandX = rightHandX;
-						leftHandY = rightHandY;	
-						rightHandX = theColorObjects [0].getXPos ();
-						rightHandY = theColorObjects [0].getYPos ();
-					}	
+//					//find which objects are the largest
+//					if (theColorObjects.Count > 0) {
+//						leftHandX = theColorObjects [0].getXPos ();
+//						leftHandY = theColorObjects [0].getYPos ();
+//						if (contours.Count > 0) {
+//							if (contours [0].toList ().Count > 1000 && leftHandClosed) {
+//								leftHandClosed = false;
+//								Debug.Log ("Left Hand OPEN");
+//							} else if (contours [0].toList ().Count < 700 && contours [0].toList ().Count > 300 && !leftHandClosed) {
+//								leftHandClosed = true;
+//								Debug.Log ("Left Hand CLOSED");
+//							}
+//						}
+//					}
+//
+//					if (theColorObjects.Count > 1) {
+//						rightHandX = theColorObjects [1].getXPos ();
+//						rightHandY = theColorObjects [1].getYPos ();
+//					}
+//
+//					if (rightHandX < leftHandX && leftHandX != 0 & rightHandX != 0) {
+//						leftHandX = rightHandX;
+//						leftHandY = rightHandY;	
+//						rightHandX = theColorObjects [0].getXPos ();
+//						rightHandY = theColorObjects [0].getYPos ();
+//					}	
 				}
 
 				public string GetHandPositions(){
@@ -284,7 +316,7 @@ namespace OpenCVForUnitySample
 												//if the area is the same as the 3/2 of the image size, probably just a bad filter
 												//we only want the object with the largest area so we safe a reference area each
 												//iteration and compare it to the area in the next iteration.
-												if (area > MIN_OBJECT_AREA) {
+												if (area > MIN_OBJECT_AREA && area < MAX_OBJECT_AREA) {
 																							
 														ColorObject colorObject = new ColorObject ();
 									
