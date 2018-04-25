@@ -7,4 +7,6 @@ now the whole project can be opened in Unity.
 This project uses the native google cardboard functionality in Unity. Android should just work, 
 but...
 if building out to IOS download CocoaPods and open the pod file in Xcode (this can be found in the IOS build file that gets created from Unity after you hit build). In Xcode go to "build phases" then "link binary with libraries".
-Add the "AssetsLibrary.framework" so that OpenCV will run on your iphone. 
+Add the "AssetsLibrary.framework" so that OpenCV will run on your iphone.
+
+If you click the top right of the screen a debug menu will appear so you can change the tolerences for different lighting/background conditions. Currently the sending of messages is turned off and it is set to receieve messages. 
